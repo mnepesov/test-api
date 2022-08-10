@@ -1,4 +1,52 @@
 basePath: /api
+definitions:
+  domains.APOD:
+    properties:
+      copyright:
+        type: string
+      created_at:
+        type: string
+      date:
+        type: string
+      explanation:
+        type: string
+      hdurl:
+        type: string
+      id:
+        type: integer
+      media_type:
+        type: string
+      service_version:
+        type: string
+      title:
+        type: string
+      url:
+        type: string
+    type: object
+  domains.ErrorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  domains.NasaAPOD:
+    properties:
+      copyright:
+        type: string
+      date:
+        type: string
+      explanation:
+        type: string
+      hdurl:
+        type: string
+      media_type:
+        type: string
+      service_version:
+        type: string
+      title:
+        type: string
+      url:
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -7,5 +55,62 @@ info:
   description: API server
   title: API
   version: "1.0"
-paths: {}
+paths:
+  /apod:
+    get:
+      consumes:
+      - application/json
+      description: Get Astronomy Picture of the Day
+      parameters:
+      - description: Adding to database. Will be added - 1; Will not be added - 0.
+        in: query
+        name: add
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domains.NasaAPOD'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domains.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domains.ErrorResponse'
+      summary: Get APOD
+      tags:
+      - APOD
+  /pictures:
+    get:
+      consumes:
+      - application/json
+      description: Get all astronomy pictures and by date
+      parameters:
+      - description: Filter by date. Date format - YYYY-MM-DD
+        in: query
+        name: date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Object containing list of APODs
+          schema:
+            $ref: '#/definitions/domains.APOD'
+        "400":
+          description: invalid date param
+          schema:
+            $ref: '#/definitions/domains.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domains.ErrorResponse'
+      summary: Get APODs
+      tags:
+      - APOD
 swagger: "2.0"

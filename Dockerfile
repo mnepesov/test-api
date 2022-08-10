@@ -1,6 +1,6 @@
 FROM golang:1.18-buster AS dependencies
 
-ENV NAME "astrology"
+ENV NAME "astronomy"
 
 WORKDIR /app/${NAME}
 
@@ -10,7 +10,7 @@ RUN go mod download && go mod verify
 
 FROM dependencies AS build
 
-ENV NAME "astrology"
+ENV NAME "astronomy"
 
 WORKDIR /app/${NAME}
 
@@ -24,7 +24,7 @@ FROM alpine:latest
 ARG NAME
 ARG LOG_LEVEL
 ARG ENV
-ENV NAME "astrology"
+ENV NAME "astronomy"
 ENV LOG_LEVEL ${LOG_LEVEL}
 ENV ENV ${ENV}
 

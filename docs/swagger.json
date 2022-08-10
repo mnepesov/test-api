@@ -11,5 +11,167 @@
     },
     "host": "localhost:8080",
     "basePath": "/api",
-    "paths": {}
+    "paths": {
+        "/apod": {
+            "get": {
+                "description": "Get Astronomy Picture of the Day",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "APOD"
+                ],
+                "summary": "Get APOD",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Adding to database. Will be added - 1; Will not be added - 0.",
+                        "name": "add",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domains.NasaAPOD"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/domains.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/domains.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/pictures": {
+            "get": {
+                "description": "Get all astronomy pictures and by date",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "APOD"
+                ],
+                "summary": "Get APODs",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Filter by date. Date format - YYYY-MM-DD",
+                        "name": "date",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Object containing list of APODs",
+                        "schema": {
+                            "$ref": "#/definitions/domains.APOD"
+                        }
+                    },
+                    "400": {
+                        "description": "invalid date param",
+                        "schema": {
+                            "$ref": "#/definitions/domains.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/domains.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "domains.APOD": {
+            "type": "object",
+            "properties": {
+                "copyright": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "explanation": {
+                    "type": "string"
+                },
+                "hdurl": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "media_type": {
+                    "type": "string"
+                },
+                "service_version": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "domains.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "domains.NasaAPOD": {
+            "type": "object",
+            "properties": {
+                "copyright": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "explanation": {
+                    "type": "string"
+                },
+                "hdurl": {
+                    "type": "string"
+                },
+                "media_type": {
+                    "type": "string"
+                },
+                "service_version": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        }
+    }
 }

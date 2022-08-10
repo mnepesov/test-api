@@ -1,6 +1,6 @@
-create table if not exists photos
+create table if not exists pictures
 (
     id         serial primary key,
     apod       jsonb not null,
-    created_at timestamp default now()
+    created_at date default CURRENT_DATE
 );

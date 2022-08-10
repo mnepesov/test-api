@@ -1,21 +1,24 @@
 package main
 
 import (
-	"back/internal/app"
 	"context"
+	"crypto/tls"
 	"flag"
 	"log"
+	"time"
 	
 	"github.com/chapsuk/grace"
+	"github.com/valyala/fasthttp"
 	"go.uber.org/zap"
 	
+	"back/internal/app"
 	"back/internal/config"
 	"back/pkg/logger"
 	"back/pkg/postgres"
 )
 
 const (
-	Name = "astrology"
+	Name = "astronomy"
 )
 
 // @title           API
@@ -50,6 +53,15 @@ func main() {
 		lg.Fatal("error while connect to postgresql", zap.Error(err))
 	}
 	
+	httpClient := &fasthttp.Client{
+		Name:                "Go-http-client/1.1",
+		MaxConnsPerHost:     32,
+		MaxIdleConnDuration: 60 * time.Second,
+		TLSConfig: &tls.Config{
+			InsecureSkipVerify: true,
+		},
+	}
+	
 	lg.Info(
 		"flags",
 		zap.String("name", Name),
@@ -61,6 +73,7 @@ func main() {
 		Logger:         lg,
 		Config:         cfg,
 		PostgresClient: pqClient,
+		HttpClient:     httpClient,
 	}
 	application.Run(ctx)
 	application.Shutdown()

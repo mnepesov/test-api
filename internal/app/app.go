@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"github.com/valyala/fasthttp"
 	
 	"github.com/jmoiron/sqlx"
 	"go.uber.org/zap"
@@ -15,6 +16,7 @@ type Application struct {
 	Logger *zap.Logger
 	
 	PostgresClient *sqlx.DB
+	HttpClient     *fasthttp.Client
 }
 
 func (app *Application) Run(ctx context.Context) {
@@ -23,6 +25,7 @@ func (app *Application) Run(ctx context.Context) {
 		app.Logger,
 		app.Config,
 		app.PostgresClient,
+		app.HttpClient,
 	)
 	
 	<-httpServerErrCh

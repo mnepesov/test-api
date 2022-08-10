@@ -1,4 +1,4 @@
-NAME ?= astrology
+NAME ?= astronomy
 GO_PACKAGE = back
 
 # ==============================================================================
@@ -33,7 +33,7 @@ docker_env_start_binding: docker_env_stop
 	if [ $$ans = y ]; then \
 		docker-compose pull; \
 	fi
-	@docker-compose up -d --build postgresql migrate
+	@docker-compose up -d postgresql migrate
 
 .PHONY: docker_env_start_full
 docker_env_start_full: docker_env_stop
@@ -44,7 +44,7 @@ docker_env_start_full: docker_env_stop
 	fi
 	@read -p "Build service [y/n]: " ans; \
 	if [ $$ans = y ]; then \
-		docker build -t astrology .; \
+		docker build -t astronomy .; \
 	fi
 	@docker-compose up -d
 

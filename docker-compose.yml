@@ -3,30 +3,36 @@ version: '3.8'
 services:
   postgresql:
     image: postgres:13.3
-    container_name: astrology_postgresql
+    container_name: astronomy_postgresql
     ports:
       - 5432:5432
     restart: always
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=1ca61a9b0dab215g
-      - POSTGRES_DB=astrology
+      - POSTGRES_DB=astronomy
     volumes:
       - postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   migrate:
     image: migrate/migrate
     volumes:
       - ./migrations:/migrations
-    command: [ "-path", "/migrations", "-database",  "postgres://postgres:1ca61a9b0dab215g@postgresql:5432/astrology?sslmode=disable", "-verbose", "up" ]
+    command: [ "-path", "/migrations", "-database",  "postgres://postgres:1ca61a9b0dab215g@postgresql:5432/astronomy?sslmode=disable", "-verbose", "up" ]
     links:
       - postgresql
     depends_on:
-      - postgresql
+      postgresql:
+        condition: service_healthy
 
-  astrology:
-    container_name: astrology
-    image: astrology:latest
+  astronomy:
+    container_name: astronomy
+    image: astronomy:latest
     environment:
       LOG_LEVEL: ${LOG_LEVEL:-debug}
       ENV: ${ENV:-docker}

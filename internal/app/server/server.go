@@ -1,7 +1,9 @@
 package server
 
 import (
+	"back/internal/delivery/http/handlers"
 	"context"
+	"github.com/valyala/fasthttp"
 	"net/http"
 	
 	"github.com/gin-gonic/gin"
@@ -23,6 +25,7 @@ type Server struct {
 	Logger *zap.Logger
 	
 	postgresClient *sqlx.DB
+	HttpClient     *fasthttp.Client
 }
 
 func NewServer(
@@ -30,20 +33,21 @@ func NewServer(
 	logger *zap.Logger,
 	config *config.AppConfig,
 	pqClient *sqlx.DB,
-
+	httpClient *fasthttp.Client,
 ) <-chan error {
 	return errch.Register(func() error {
 		return (&Server{
 			Config:         config,
 			Logger:         logger,
 			postgresClient: pqClient,
+			HttpClient:     httpClient,
 		}).Start(ctx)
 	})
 }
 
 func (s *Server) Start(ctx context.Context) error {
 	repo := repository.NewRepository(s.postgresClient)
-	n := nasa.NewNasa(s.Config.NASA.ApiKey)
+	n := nasa.NewNasaClient(s.HttpClient, s.Config.NASA.ApiKey)
 	uc := usecase.NewUseCase(s.Logger, repo, n)
 	
 	router := s.initHTTPServer(uc)
@@ -79,6 +83,12 @@ func (s *Server) initHTTPServer(uc usecase.IUseCase) *gin.Engine {
 	router.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "OK")
 	})
+	
+	h := handlers.NewHandler(s.Logger, uc)
+	
+	api := router.Group("/api")
+	api.GET("/pictures", h.GetPicturesHandler)
+	api.GET("/apod", h.GetAPODHandler)
 	
 	return router
 }
