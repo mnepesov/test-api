@@ -53,6 +53,10 @@ docker_env_stop:
 	@echo "> Stop docker environment"
 	@docker-compose down
 
+.PHONY: docker_build
+docker_build:
+	docker build -t astronomy .
+
 # ==============================================================================
 # Linters
 
