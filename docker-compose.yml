@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  postgresql:
+    image: postgres:13.3
+    container_name: astrology_postgresql
+    ports:
+      - 5432:5432
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1ca61a9b0dab215g
+      - POSTGRES_DB=astrology
+    volumes:
+      - postgres:/var/lib/postgresql/data
+
+  migrate:
+    image: migrate/migrate
+    volumes:
+      - ./migrations:/migrations
+    command: [ "-path", "/migrations", "-database",  "postgres://postgres:1ca61a9b0dab215g@postgresql:5432/astrology?sslmode=disable", "-verbose", "up" ]
+    links:
+      - postgresql
+    depends_on:
+      - postgresql
+
+  astrology:
+    container_name: astrology
+    image: astrology:latest
+    environment:
+      LOG_LEVEL: ${LOG_LEVEL:-debug}
+      ENV: ${ENV:-docker}
+    restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      - migrate
+
+volumes:
+  postgres:
+    driver: local

@@ -1,0 +1,15 @@
+# Hidden
+.editorconfig
+.git
+
+# Build
+bin
+tars
+build
+
+# Resources
+test
+init
+
+# MD files
+README.md

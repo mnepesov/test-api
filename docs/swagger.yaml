@@ -1,0 +1,11 @@
+basePath: /api
+host: localhost:8080
+info:
+  contact:
+    email: mnepesov.dev@gmail.com
+    name: Mekan Nepesov
+  description: API server
+  title: API
+  version: "1.0"
+paths: {}
+swagger: "2.0"
